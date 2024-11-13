@@ -4,15 +4,16 @@ import 'package:meals_app_riverpod/models/meal.dart';
 class FavouritesMealsNotifer extends StateNotifier<List<Meal>> {
   FavouritesMealsNotifer() : super([]);
 
-  void toggleMealFavoriteStatus(Meal meal) {
+  bool toggleMealFavoriteStatus(Meal meal) {
     final mealIsFavourite = state.contains(meal);
 
     if (mealIsFavourite) {
       state = state.where((m) => m.id != meal.id).toList();
+      return true;
     } else {
       state = [...state, meal];
+      return false;
     }
-    state = [];
   }
 }
 
