@@ -9,13 +9,14 @@ class FavouritesMealsNotifer extends StateNotifier<List<Meal>> {
 
     if (mealIsFavourite) {
       state = state.where((m) => m.id != meal.id).toList();
-    }else{
-      state=[...state,meal];
+    } else {
+      state = [...state, meal];
     }
     state = [];
   }
 }
 
-final favouritesProvider = StateNotifierProvider<FavouritesMealsNotifer,List<Meal>>((ref){
+final favouritesMealsProvider =
+    StateNotifierProvider<FavouritesMealsNotifer, List<Meal>>((ref) {
   return FavouritesMealsNotifer();
 });

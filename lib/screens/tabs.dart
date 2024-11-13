@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:meals_app_riverpod/models/meal.dart';
+import 'package:meals_app_riverpod/providers/favourites_provider.dart';
 import 'package:meals_app_riverpod/providers/meals_provider.dart';
 import 'package:meals_app_riverpod/screens/categories.dart';
 import 'package:meals_app_riverpod/screens/filters.dart';
@@ -23,7 +23,6 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  final List<Meal> _favoriteMeal = [];
   Map<Filter, bool> _selectedFilters = kInitialFilters;
 
   void _showInfoMessage(String message) {
@@ -33,22 +32,6 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
         content: Text(message),
       ),
     );
-  }
-
-  void _toggleMealFavoriteStatus(Meal meal) {
-    final isExsiting = _favoriteMeal.contains(meal);
-
-    if (isExsiting) {
-      setState(() {
-        _favoriteMeal.remove(meal);
-        _showInfoMessage('Removed Meal from Favorites');
-      });
-    } else {
-      setState(() {
-        _favoriteMeal.add(meal);
-        _showInfoMessage('Added Meal to Favorites');
-      });
-    }
   }
 
   void _selectPage(int index) {
@@ -77,7 +60,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     //? the 'ref' property by riverpod allows to set up listners to our provider
-    final meals=ref.watch(mealsProvider);
+    final meals = ref.watch(mealsProvider);
     final availableMeals = meals.where((meal) {
       if (_selectedFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
         return false;
@@ -95,15 +78,14 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     }).toList();
 
     Widget activePage = CategoriesScreen(
-      onToggleFavorite: _toggleMealFavoriteStatus,
       availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
 
     if (_selectedPageIndex == 1) {
+      final favoriteMeals = ref.watch(favouritesMealsProvider);
       activePage = MealsScreen(
-        meals: _favoriteMeal,
-        onToggleFavorite: _toggleMealFavoriteStatus,
+        meals: favoriteMeals,
       );
       activePageTitle = 'Your Favorites';
     }
