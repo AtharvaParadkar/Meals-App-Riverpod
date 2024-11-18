@@ -76,8 +76,16 @@ class _CategoriesScreenState extends State<CategoriesScreen>
         ],
       ),
       //^ The Widgets in the builder method are animted
-      builder: (context, child) => Padding(
-        padding: EdgeInsets.only(top:650-  _animationController.value * 650),
+      builder: (context, child) => SlideTransition(
+        position: Tween(
+          begin: const Offset(0, 0.3),
+          end: const Offset(0, 0),
+        ).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeInOut,
+          ),
+        ),
         child: child,
       ),
     );
